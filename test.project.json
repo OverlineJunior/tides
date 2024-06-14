@@ -1,0 +1,30 @@
+{
+    "name": "test-tides",
+    "tree": {
+        "$className": "DataModel",
+        "ServerScriptService": {
+            "$className": "ServerScriptService",
+            "main": {
+                "$path": "tests/main.server.luau"
+            }
+        },
+        "StarterPlayer": {
+            "$className": "StarterPlayer",
+            "StarterPlayerScripts": {
+                "$className": "StarterPlayerScripts",
+                "main": {
+                    "$path": "tests/main.client.luau"
+                }
+            }
+        },
+        "ReplicatedStorage": {
+            "$className": "ReplicatedStorage",
+            "tides": {
+                "$path": "src"
+            },
+            "remotes": {
+                "$path": "tests/remotes.luau"
+            }
+        }
+    }
+}
