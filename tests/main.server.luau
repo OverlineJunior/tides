@@ -1,4 +1,3 @@
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local tides = ReplicatedStorage:FindFirstChild("tides")
@@ -6,6 +5,6 @@ local tides = ReplicatedStorage:FindFirstChild("tides")
 
 local Server = require(tides).Server
 
-Players.PlayerAdded:Connect(function(plr)
-	Server.sendReliable(plr, "test", 1, "hello!", true)
+Server.addListener("test", function(plr, a, b, c)
+	print(`Dudeee, I just got those from {plr.Name}:`, a, b, c)
 end)

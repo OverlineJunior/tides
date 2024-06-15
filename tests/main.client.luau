@@ -5,6 +5,4 @@ local tides = ReplicatedStorage:FindFirstChild("tides")
 
 local Client = require(tides).Client
 
-Client.addListener("test", function(a, b, c)
-	print("Received test event with:", a, b, c)
-end)
+Client.sendReliable("test", 555, 333, 111)

@@ -5,18 +5,34 @@ local Shared = require(script.Parent.shared)
 type Map<K, V> = Shared.Map<K, V>
 type EventId = Shared.EventId
 type Packet = Shared.Packet
+type ListenerFn = (sender: Player, args: {any}) -> nil
 
 local reliable = Shared.getReliable()
 local unreliable = Shared.getUnreliable()
 local outgoingPackets: Map<Player, {Packet}> = {}
+local listeners: Map<EventId, {ListenerFn}> = {}
 
 local function flushPackets()
-	for plr, pkt in outgoingPackets do
-		if next(pkt) then
-			reliable:FireClient(plr, pkt)
+	for plr, pkts in outgoingPackets do
+		if next(pkts) then
+			reliable:FireClient(plr, pkts)
 		end
 
 		outgoingPackets[plr] = nil
+	end
+end
+
+local function consumePackets(sender: Player, packets: {Packet})
+	assert(packets, "Should not be fired without incoming packets")
+
+	for _, pkt in packets do
+		local eventId = pkt.eventId
+
+		if listeners[eventId] then
+			for _, listener in listeners[eventId] do
+				listener(sender, table.unpack(pkt.args))
+			end
+		end
 	end
 end
 
@@ -40,8 +56,17 @@ function Server.sendUnreliable(receiver: Player, eventId: EventId, ...)
 	unreliable:FireClient(receiver, eventId, ...)
 end
 
+function Server.addListener(eventId: EventId, callback: ListenerFn)
+	if listeners[eventId] then
+		table.insert(listeners[eventId], callback)
+	else
+		listeners[eventId] = {callback}
+	end
+end
+
 function Server.start()
 	RunService.Stepped:Connect(flushPackets)
+	reliable.OnServerEvent:Connect(consumePackets)
 end
 
 return Server
