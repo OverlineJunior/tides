@@ -1,20 +1,16 @@
 local RunService = game:GetService("RunService")
 
-local Server = require(script.server)
-local Client = require(script.client)
 local Shared = require(script.shared)
-
-print("module running")
 
 if RunService:IsServer() then
 	Shared.makeRemotes()
-	Server.start()
+	require(script.server).start()
 else
 	Shared.waitForRemotes()
-	Client.start()
+	require(script.client).start()
 end
 
 return {
-	Server = Server,
-	Client = Client,
+	Server = require(script.server),
+	Client = require(script.client),
 }
