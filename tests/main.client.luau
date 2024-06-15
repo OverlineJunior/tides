@@ -5,4 +5,9 @@ local tides = ReplicatedStorage:FindFirstChild("tides")
 
 local Client = require(tides).Client
 
-Client.sendReliable("test", 555, 333, 111)
+Client.addListener("test", function(a, b)
+	print(`Dudeee, I just got those from the server!:`, a, b)
+end)
+
+Client.sendReliable("test", "I am reliable!", 111)
+Client.sendUnreliable("test", "I am unreliable!", 222)

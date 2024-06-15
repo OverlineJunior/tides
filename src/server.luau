@@ -22,17 +22,19 @@ local function flushPackets()
 	end
 end
 
+local function callListeners(sender: Player, eventId: EventId, ...)
+	if listeners[eventId] then
+		for _, listener in listeners[eventId] do
+			listener(sender, ...)
+		end
+	end
+end
+
 local function consumePackets(sender: Player, packets: {Packet})
 	assert(packets, "Should not be fired without incoming packets")
 
 	for _, pkt in packets do
-		local eventId = pkt.eventId
-
-		if listeners[eventId] then
-			for _, listener in listeners[eventId] do
-				listener(sender, table.unpack(pkt.args))
-			end
-		end
+		callListeners(sender, pkt.eventId, table.unpack(pkt.args))
 	end
 end
 
@@ -67,6 +69,7 @@ end
 function Server.start()
 	RunService.Stepped:Connect(flushPackets)
 	reliable.OnServerEvent:Connect(consumePackets)
+	unreliable.OnServerEvent:Connect(callListeners)
 end
 
 return Server

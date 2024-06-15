@@ -20,7 +20,7 @@ function Shared.makeRemotes()
 	r.Name = RELIABLE_NAME
 	r.Parent = REMOTE_CONTAINER
 
-	local u = Instance.new("RemoteEvent")
+	local u = Instance.new("UnreliableRemoteEvent")
 	u.Name = UNRELIABLE_NAME
 	u.Parent = REMOTE_CONTAINER
 end
@@ -35,7 +35,7 @@ function Shared.getReliable(): RemoteEvent
 		or error(ERR_UNLOADED_REMOTES)
 end
 
-function Shared.getUnreliable(): RemoteEvent
+function Shared.getUnreliable(): UnreliableRemoteEvent
 	return REMOTE_CONTAINER:FindFirstChild(UNRELIABLE_NAME)
 		or error(ERR_UNLOADED_REMOTES)
 end
